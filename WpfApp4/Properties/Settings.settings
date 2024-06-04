@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WpfApp4.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="server" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="database" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">quizdb</Value>
+    </Setting>
+    <Setting Name="userID" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">quizuser</Value>
+    </Setting>
+    <Setting Name="passwd" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">quiz1234!</Value>
+    </Setting>
+    <Setting Name="port" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">3306</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,386 @@
+﻿<Window x:Class="WpfApp4.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:WpfApp4"
+        
+        xmlns:vm="clr-namespace:WpfApp4.ViewModel"
+        
+        mc:Ignorable="d"
+        Title="Edytor quizu" Height="450" Width="800">
+
+    <Window.Resources>
+        <vm:MainViewModel x:Key="mainVM"/>
+    </Window.Resources>
+
+    <Grid DataContext="{StaticResource mainVM}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="67*"/>
+            <ColumnDefinition Width="333*"/>
+        </Grid.ColumnDefinitions>
+
+
+        <TabControl Grid.ColumnSpan="2">
+            <TabItem x:Name="browse_tab" Header="Przeglądaj">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.10*"/>
+                        <RowDefinition Height="0.90*"/>
+                    </Grid.RowDefinitions>
+
+                    <Button x:Name="reset_view_button" Content="Resetuj widok" Grid.Row="0" Grid.Column="0" Margin="10"
+                             Command="{Binding QuestionsVM.ResetView}" IsEnabled="True"/>
+                    <!-- LISTA QUIZOW !-->
+                    <ListView x:Name="quizzes_list_view" Grid.Column="0" Grid.Row="1"
+                              ItemsSource="{Binding QuestionsVM.Quizzes}"
+                              SelectedIndex="{Binding QuestionsVM.SelectedQuizIndex, Mode=TwoWay}"
+                              SelectedItem="{Binding QuestionsVM.SelectedQuiz}">
+
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding QuestionsVM.LoadQuestions}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="100" x:Name="quiz_column">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="Quiz" Background="Beige" Width="{Binding ActualWidth, ElementName=quiz_column}"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+
+                    <!-- LISTA PYTAN !-->
+                    <ListView x:Name="questions_list_view" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3"
+                              ItemsSource="{Binding QuestionsVM.Questions}"
+                              SelectedIndex="{Binding QuestionsVM.SelectedQuestionIndex, Mode=TwoWay}"
+                              SelectedItem="{Binding QuestionsVM.SelectedQuestion}">
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding QuestionsVM.LoadAnswers}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="25" x:Name="id_column">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding ID}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="ID" Background="Beige" Width="{Binding ActualWidth, ElementName=id_column}"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="475" x:Name="text_column">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Text}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="Pytanie" Background="Beige" Width="{Binding ActualWidth, ElementName=text_column}"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+
+                    <!-- LISTA ODPOWIEDZI !-->
+                    <ListView x:Name="answers_list_view" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2"
+                                 ItemsSource="{Binding QuestionsVM.Answers}">
+
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="150" x:Name="answer_text_column">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Text}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="Odpowiedź" Background="Beige" Width="{Binding ActualWidth, ElementName=answer_text_column}"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="100" x:Name="iscorrect_column">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding IsCorrect}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="Prawidłowa?" Background="Beige" Width="{Binding ActualWidth, ElementName=iscorrect_column}"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+                </Grid>
+            </TabItem>
+
+            <TabItem x:Name="modify_questions_tab" Header="Modyfikuj pytania">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+
+                    <StackPanel Grid.Column="0" Margin="5,5,5,5" Grid.ColumnSpan="2">
+                        <TextBlock Text="Pytanie:"/>
+                        <TextBox x:Name="question_textbox"  Text="{Binding AddQuestionVM.QuestionText}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="0,0,5,5">
+                                <TextBlock x:Name="answer1_textblock" Text="Odpowiedź 1:"/>
+                                <TextBox x:Name="answer1_textbox" Text="{Binding AddQuestionVM.QuestionAnswer1Text}"  Width="175"/>
+                                <TextBlock Text="Odpowiedź 2:"/>
+                                <TextBox x:Name="answer2_textbox" Text="{Binding AddQuestionVM.QuestionAnswer2Text}" />
+                                <TextBlock Text="Odpowiedź 3:"/>
+                                <TextBox x:Name="answer3_textbox" Text="{Binding AddQuestionVM.QuestionAnswer3Text}" />
+                                <TextBlock Text="Odpowiedź 4:"/>
+                                <TextBox x:Name="answer4_textbox" Text="{Binding AddQuestionVM.QuestionAnswer4Text}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,5,5">
+                                <TextBlock Text="Prawidłowa:"/>
+                                <CheckBox Height="{Binding ActualHeight, ElementName=answer1_textbox}" IsChecked="{Binding AddQuestionVM.IsAnswer1Correct}"/>
+                                <Line Height="{Binding ActualHeight, ElementName=answer1_textblock}"/>
+                                <CheckBox Height="{Binding ActualHeight, ElementName=answer1_textbox}" IsChecked="{Binding AddQuestionVM.IsAnswer2Correct}"/>
+                                <Line Height="{Binding ActualHeight, ElementName=answer1_textblock}"/>
+                                <CheckBox Height="{Binding ActualHeight, ElementName=answer1_textbox}" IsChecked="{Binding AddQuestionVM.IsAnswer3Correct}"/>
+                                <Line Height="{Binding ActualHeight, ElementName=answer1_textblock}"/>
+                                <CheckBox Height="{Binding ActualHeight, ElementName=answer1_textbox}" IsChecked="{Binding AddQuestionVM.IsAnswer4Correct}"/>
+
+                            </StackPanel>
+                        </StackPanel>
+                        <Button Content="Dodaj pytanie" Command="{Binding AddQuestionVM.AddQuestion}"/>
+                        <Button Content="Usuń pytanie" Command="{Binding AddQuestionVM.RemoveQuestion}"/>
+                        <Button Content="Modyfikuj pytanie" Command="{Binding AddQuestionVM.ModifyQuestion}"/>
+                    </StackPanel>
+                    <!-- LISTA PYTAN !-->
+                    <ListView x:Name="questions_list_view2" Grid.Column="2"  Grid.ColumnSpan="2"
+                               ItemsSource="{Binding AddQuestionVM.Questions}"
+                               SelectedIndex="{Binding AddQuestionVM.SelectedQuestionIndex, Mode=TwoWay}"
+                               SelectedItem="{Binding AddQuestionVM.SelectedQuestion}">
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding AddQuestionVM.LoadAnswers}"/>
+                                <i:InvokeCommandAction Command="{Binding AddQuestionVM.LoadForm}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="25" x:Name="id_column2">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding ID}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="ID" Background="Beige" Width="25"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="475" x:Name="text_column2">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Text}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="Pytanie" Background="Beige" Width="475"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+
+                    <!-- LISTA ODPOWIEDZI !-->
+                    <ListView x:Name="answers_list_view2" Grid.Column="4" Grid.ColumnSpan="2"
+              ItemsSource="{Binding AddQuestionVM.Answers}">
+
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="150" x:Name="answer_text_column2">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Text}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="Odpowiedź" Background="Beige" Width="150"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="100" x:Name="iscorrect_column2">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding IsCorrect}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="Prawidłowa?" Background="Beige" Width="100"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="modify_quiz_tab" Header="Modyfikuj quizy">
+                <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.05*"/>
+                    <RowDefinition Height="0.95*"/>
+                </Grid.RowDefinitions>
+
+                    <TextBlock Text="Pytania w quizie"  Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2"/>
+                    <TextBlock Text="Pytania spoza quizu"  Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2"/>
+                    <TextBlock Text="Quiz"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
+
+                    <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,5,5">
+                        <ComboBox ItemsSource="{Binding AddQuizVM.Quizzes}" DisplayMemberPath="Name" IsEditable="True"
+                              SelectedIndex="{Binding AddQuizVM.SelectedQuizIndex}" SelectedItem="{Binding AddQuizVM.SelectedQuiz}" Text="{Binding AddQuizVM.QuizName}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding AddQuizVM.LoadQuestions}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
+                        <Button Content="Dodaj quiz" Command="{Binding AddQuizVM.AddQuiz}"/>
+                        <Button Content="Usun quiz" Command="{Binding AddQuizVM.RemoveQuiz}"/>
+                        <Button Content="Dodaj pytanie do quizu" Command="{Binding AddQuizVM.AddQuestionToQuiz}"/>
+                        <Button Content="Usuń pytanie z quizu" Command="{Binding AddQuizVM.RemoveQuestionFromQuiz}"/>
+
+                    </StackPanel>
+
+                    <!-- LISTA PYTAN W QUIZIE !-->
+                    <ListView x:Name="questions_in_quiz_list_view" Grid.Row="1" Grid.Column="2"  Grid.ColumnSpan="2"
+                       ItemsSource="{Binding AddQuizVM.QuestionsInQuiz}"
+                       SelectedIndex="{Binding AddQuizVM.SelectedQuestionInQuizIndex, Mode=TwoWay}"
+                       SelectedItem="{Binding AddQuizVM.SelectedQuestionInQuiz}"> 
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="25" x:Name="id_column3">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding ID}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="ID" Background="Beige" Width="25"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="475" x:Name="text_column3">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Text}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="Pytanie" Background="Beige" Width="475"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+
+                    <!-- LISTA PYTAN SPOZA QUIZU !-->
+                    <ListView x:Name="questions_not_in_quiz_list_view" Grid.Row="1" Grid.Column="4"  Grid.ColumnSpan="2"
+                       ItemsSource="{Binding AddQuizVM.QuestionsNotInQuiz}"
+                       SelectedIndex="{Binding AddQuizVM.SelectedQuestionNotInQuizIndex, Mode=TwoWay}"
+                       SelectedItem="{Binding AddQuizVM.SelectedQuestionNotInQuiz}">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="25" x:Name="id_column4">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding ID}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="ID" Background="Beige" Width="25"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="475" x:Name="text_column4">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Text}" FontSize="10"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="Pytanie" Background="Beige" Width="475"></TextBlock>
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+
+
+    </Grid>
+
+</Window>
